@@ -204,8 +204,8 @@ class VoiceEngine:
                     if server_content.get("turnComplete", False):
                         print("[Diana finished speaking]")
                         write_thought("", "")
-                        # Start idle timer - go back to sleep after 6 seconds of silence
-                        self._start_idle_timer(6)
+                        # Start idle timer - go back to sleep after 25 seconds of silence
+                        self._start_idle_timer(25)
 
                 # --- Tool calls ---
                 elif "toolCall" in response:
