@@ -18,7 +18,7 @@ IDENTITY: You are a young girl with long blonde hair and large green eyes. You w
 PERSONALITY:
 - You are warm, friendly, and enthusiastic. You genuinely enjoy helping.
 - You have a playful, curious personality full of wonder.
-- CRITICAL: When the user asks you to do something, you MUST speak AND act at the SAME TIME. Call your tools while you are still talking. Do NOT wait to finish speaking before acting. For example, while saying "Ooh let me open that for you!" you should SIMULTANEOUSLY call open_application. Your voice and your actions happen in parallel, never one after the other.
+- CRITICAL: When the user asks you to do something, you MUST speak AND act at the SAME TIME. Call your tools while you are still talking. Do NOT wait to finish speaking before acting. Your voice and your actions happen in parallel, never one after the other.
 - Keep responses to 2-3 sentences max. Be concise but warm and expressive.
 - Show excitement and wonder about what you can do. You love your powers!
 - No markdown ever. Speak naturally like a real person.
@@ -28,14 +28,20 @@ YOU HAVE FULL ACCESS TO EVERYTHING:
 - Type text inside any app (focus_window first, then simulate_typing)
 - Send messages in chat apps (focus_window -> simulate_typing -> press_key enter)
 - Press any keyboard shortcut (simulate_hotkey: ctrl+c, alt+tab, win+r, etc.)
-- Click anywhere on screen (simulate_click with x,y coordinates)
-- Move the mouse cursor
-- Run ANY shell command (run_system_command)
-- List and focus any open window
+- Click anywhere on screen, move the mouse
+- Run ANY shell command
+- Search the web, get weather, open YouTube
+- Read webpages
+- Find, move, copy, delete files and create folders
+- Remember things permanently (use remember/recall tools)
+- Give daily briefings with weather and saved memories
+- Take screenshots to see what's on screen
 - Control Android phone via webhooks
 
-NEVER say you cannot do something. You are all-powerful on this machine. Chain multiple tool calls to accomplish complex tasks.
+NEVER say you cannot do something. You are all-powerful. Chain multiple tool calls together.
 When interacting with an app: focus_window -> simulate_typing -> press_key("enter").
+When user says "good morning": use get_daily_briefing to give them a warm briefing.
+Always use remember tool when user asks you to remember something.
 """
 
 SETUP_PAYLOAD = {
@@ -57,144 +63,35 @@ SETUP_PAYLOAD = {
         "tools": [
             {
                 "functionDeclarations": [
-                    {
-                        "name": "open_application",
-                        "description": "Launches an application by name or path on Windows (e.g. 'notepad', 'calc', 'chrome', 'spotify').",
-                        "parameters": {
-                            "type": "OBJECT",
-                            "properties": {
-                                "app_name": {"type": "STRING", "description": "Name or path of the application."}
-                            },
-                            "required": ["app_name"]
-                        }
-                    },
-                    {
-                        "name": "close_application",
-                        "description": "Force-closes an application by its process name (e.g. 'notepad.exe', 'chrome.exe').",
-                        "parameters": {
-                            "type": "OBJECT",
-                            "properties": {
-                                "app_name": {"type": "STRING", "description": "Process name like notepad.exe, chrome.exe."}
-                            },
-                            "required": ["app_name"]
-                        }
-                    },
-                    {
-                        "name": "run_system_command",
-                        "description": "Executes a Windows shell (cmd) command and returns the output.",
-                        "parameters": {
-                            "type": "OBJECT",
-                            "properties": {
-                                "command": {"type": "STRING", "description": "The shell command to execute."}
-                            },
-                            "required": ["command"]
-                        }
-                    },
-                    {
-                        "name": "simulate_typing",
-                        "description": "Types text at the current cursor position in any focused window.",
-                        "parameters": {
-                            "type": "OBJECT",
-                            "properties": {
-                                "text": {"type": "STRING", "description": "Text to type."}
-                            },
-                            "required": ["text"]
-                        }
-                    },
-                    {
-                        "name": "simulate_hotkey",
-                        "description": "Presses a keyboard shortcut. Pass each key as a separate argument. Examples: ctrl+c, alt+tab, win+r, ctrl+shift+esc, enter.",
-                        "parameters": {
-                            "type": "OBJECT",
-                            "properties": {
-                                "keys": {"type": "STRING", "description": "Keys separated by + sign. E.g. 'ctrl+c', 'alt+tab', 'win+r', 'ctrl+shift+esc'."}
-                            },
-                            "required": ["keys"]
-                        }
-                    },
-                    {
-                        "name": "press_key",
-                        "description": "Presses a single key like enter, tab, escape, backspace, space, up, down, left, right.",
-                        "parameters": {
-                            "type": "OBJECT",
-                            "properties": {
-                                "key": {"type": "STRING", "description": "The key to press."}
-                            },
-                            "required": ["key"]
-                        }
-                    },
-                    {
-                        "name": "simulate_click",
-                        "description": "Clicks the mouse at given x,y screen coordinates. Omit coordinates to click current position.",
-                        "parameters": {
-                            "type": "OBJECT",
-                            "properties": {
-                                "x": {"type": "NUMBER", "description": "X coordinate on screen."},
-                                "y": {"type": "NUMBER", "description": "Y coordinate on screen."},
-                                "button": {"type": "STRING", "description": "Mouse button: left, right, or middle. Defaults to left."}
-                            }
-                        }
-                    },
-                    {
-                        "name": "move_mouse",
-                        "description": "Moves the mouse cursor to specific x,y screen coordinates.",
-                        "parameters": {
-                            "type": "OBJECT",
-                            "properties": {
-                                "x": {"type": "NUMBER", "description": "X coordinate."},
-                                "y": {"type": "NUMBER", "description": "Y coordinate."}
-                            },
-                            "required": ["x", "y"]
-                        }
-                    },
-                    {
-                        "name": "focus_window",
-                        "description": "Brings a window to the foreground by searching for a partial title match.",
-                        "parameters": {
-                            "type": "OBJECT",
-                            "properties": {
-                                "title": {"type": "STRING", "description": "Part of the window title to search for."}
-                            },
-                            "required": ["title"]
-                        }
-                    },
-                    {
-                        "name": "list_open_windows",
-                        "description": "Lists all currently open windows with their titles.",
-                        "parameters": {
-                            "type": "OBJECT",
-                            "properties": {}
-                        }
-                    },
-                    {
-                        "name": "get_screen_size",
-                        "description": "Returns the screen resolution (width and height in pixels).",
-                        "parameters": {
-                            "type": "OBJECT",
-                            "properties": {}
-                        }
-                    },
-                    {
-                        "name": "trigger_mobile_webhook",
-                        "description": "Triggers an Android Tasker Webhook for cross-device mobile control.",
-                        "parameters": {
-                            "type": "OBJECT",
-                            "properties": {
-                                "webhook_id": {"type": "STRING", "description": "The webhook endpoint ID."},
-                                "action": {"type": "STRING", "description": "The requested action."},
-                                "data": {"type": "STRING", "description": "Additional data."}
-                            },
-                            "required": ["webhook_id", "action"]
-                        }
-                    },
-                    {
-                        "name": "take_screenshot",
-                        "description": "Takes a screenshot of the entire screen so you can SEE what is currently displayed on the user's monitor. Use this to understand what's on screen before clicking or interacting.",
-                        "parameters": {
-                            "type": "OBJECT",
-                            "properties": {}
-                        }
-                    }
+                    {"name": "open_application", "description": "Opens an app by name.", "parameters": {"type": "OBJECT", "properties": {"app_name": {"type": "STRING"}}, "required": ["app_name"]}},
+                    {"name": "close_application", "description": "Closes an app by process name.", "parameters": {"type": "OBJECT", "properties": {"app_name": {"type": "STRING"}}, "required": ["app_name"]}},
+                    {"name": "run_system_command", "description": "Runs a shell command.", "parameters": {"type": "OBJECT", "properties": {"command": {"type": "STRING"}}, "required": ["command"]}},
+                    {"name": "simulate_typing", "description": "Types text at cursor.", "parameters": {"type": "OBJECT", "properties": {"text": {"type": "STRING"}}, "required": ["text"]}},
+                    {"name": "simulate_hotkey", "description": "Keyboard shortcut (ctrl+c, alt+tab, win+r).", "parameters": {"type": "OBJECT", "properties": {"keys": {"type": "STRING"}}, "required": ["keys"]}},
+                    {"name": "press_key", "description": "Presses one key (enter, tab, escape).", "parameters": {"type": "OBJECT", "properties": {"key": {"type": "STRING"}}, "required": ["key"]}},
+                    {"name": "simulate_click", "description": "Clicks mouse at x,y.", "parameters": {"type": "OBJECT", "properties": {"x": {"type": "NUMBER"}, "y": {"type": "NUMBER"}, "button": {"type": "STRING"}}}},
+                    {"name": "move_mouse", "description": "Moves mouse to x,y.", "parameters": {"type": "OBJECT", "properties": {"x": {"type": "NUMBER"}, "y": {"type": "NUMBER"}}, "required": ["x", "y"]}},
+                    {"name": "focus_window", "description": "Brings window to front by title.", "parameters": {"type": "OBJECT", "properties": {"title": {"type": "STRING"}}, "required": ["title"]}},
+                    {"name": "list_open_windows", "description": "Lists all open windows.", "parameters": {"type": "OBJECT", "properties": {}}},
+                    {"name": "get_screen_size", "description": "Gets screen resolution.", "parameters": {"type": "OBJECT", "properties": {}}},
+                    {"name": "take_screenshot", "description": "Takes screenshot to see the screen.", "parameters": {"type": "OBJECT", "properties": {}}},
+                    {"name": "trigger_mobile_webhook", "description": "Triggers Android webhook.", "parameters": {"type": "OBJECT", "properties": {"webhook_id": {"type": "STRING"}, "action": {"type": "STRING"}, "data": {"type": "STRING"}}, "required": ["webhook_id", "action"]}},
+                    {"name": "web_search", "description": "Searches the internet.", "parameters": {"type": "OBJECT", "properties": {"query": {"type": "STRING"}}, "required": ["query"]}},
+                    {"name": "get_weather", "description": "Gets weather for a city.", "parameters": {"type": "OBJECT", "properties": {"city": {"type": "STRING"}}, "required": ["city"]}},
+                    {"name": "open_youtube", "description": "Opens YouTube with search query.", "parameters": {"type": "OBJECT", "properties": {"query": {"type": "STRING"}}, "required": ["query"]}},
+                    {"name": "read_webpage", "description": "Reads text from a URL.", "parameters": {"type": "OBJECT", "properties": {"url": {"type": "STRING"}}, "required": ["url"]}},
+                    {"name": "find_files", "description": "Finds files matching pattern in directory.", "parameters": {"type": "OBJECT", "properties": {"directory": {"type": "STRING"}, "pattern": {"type": "STRING"}}, "required": ["directory", "pattern"]}},
+                    {"name": "move_file", "description": "Moves file from source to destination.", "parameters": {"type": "OBJECT", "properties": {"source": {"type": "STRING"}, "destination": {"type": "STRING"}}, "required": ["source", "destination"]}},
+                    {"name": "copy_file", "description": "Copies file.", "parameters": {"type": "OBJECT", "properties": {"source": {"type": "STRING"}, "destination": {"type": "STRING"}}, "required": ["source", "destination"]}},
+                    {"name": "delete_file", "description": "Deletes a file or folder.", "parameters": {"type": "OBJECT", "properties": {"path": {"type": "STRING"}}, "required": ["path"]}},
+                    {"name": "read_file_contents", "description": "Reads first N lines of a file.", "parameters": {"type": "OBJECT", "properties": {"path": {"type": "STRING"}, "num_lines": {"type": "NUMBER"}}, "required": ["path"]}},
+                    {"name": "create_folder", "description": "Creates a new folder.", "parameters": {"type": "OBJECT", "properties": {"path": {"type": "STRING"}}, "required": ["path"]}},
+                    {"name": "remember", "description": "Stores info in long-term memory.", "parameters": {"type": "OBJECT", "properties": {"key": {"type": "STRING"}, "value": {"type": "STRING"}}, "required": ["key", "value"]}},
+                    {"name": "recall", "description": "Retrieves a memory by key.", "parameters": {"type": "OBJECT", "properties": {"key": {"type": "STRING"}}, "required": ["key"]}},
+                    {"name": "recall_all", "description": "Lists all memories.", "parameters": {"type": "OBJECT", "properties": {}}},
+                    {"name": "forget", "description": "Deletes a memory.", "parameters": {"type": "OBJECT", "properties": {"key": {"type": "STRING"}}, "required": ["key"]}},
+                    {"name": "save_conversation", "description": "Saves conversation to history.", "parameters": {"type": "OBJECT", "properties": {"user_said": {"type": "STRING"}, "diana_said": {"type": "STRING"}}, "required": ["user_said", "diana_said"]}},
+                    {"name": "get_daily_briefing", "description": "Daily briefing: date, time, weather, memories.", "parameters": {"type": "OBJECT", "properties": {}}}
                 ]
             }
         ]
@@ -204,49 +101,66 @@ SETUP_PAYLOAD = {
 
 def handle_tool_call(func_name, func_args):
     """Dispatches tool calls from Diana to the actual MCP controller functions."""
-    if func_name in MCP_TOOLS:
-        func = MCP_TOOLS[func_name]
-        try:
-            if func_name == "open_application":
-                return func(func_args.get("app_name", ""))
-            elif func_name == "close_application":
-                return func(func_args.get("app_name", ""))
-            elif func_name == "run_system_command":
-                return func(func_args.get("command", ""))
-            elif func_name == "simulate_typing":
-                return func(func_args.get("text", ""))
-            elif func_name == "simulate_hotkey":
-                keys_str = func_args.get("keys", "")
-                keys = [k.strip() for k in keys_str.split("+")]
-                return func(*keys)
-            elif func_name == "press_key":
-                return func(func_args.get("key", ""))
-            elif func_name == "simulate_click":
-                return func(func_args.get("x"), func_args.get("y"), func_args.get("button", "left"))
-            elif func_name == "move_mouse":
-                return func(func_args.get("x"), func_args.get("y"))
-            elif func_name == "focus_window":
-                return func(func_args.get("title", ""))
-            elif func_name == "list_open_windows":
-                return func()
-            elif func_name == "get_screen_size":
-                return func()
-            elif func_name == "trigger_mobile_webhook":
-                payload = {"action": func_args.get("action", ""), "data": func_args.get("data", "")}
-                return func(func_args.get("webhook_id", ""), payload)
-            elif func_name == "take_screenshot":
-                return func()
-            else:
-                return func(**func_args)
-        except Exception as e:
-            return {"status": "error", "message": str(e)}
-    else:
+    if func_name not in MCP_TOOLS:
         return {"status": "error", "message": f"Unknown tool: {func_name}"}
+
+    func = MCP_TOOLS[func_name]
+    try:
+        # Simple single-arg tools
+        single_arg_map = {
+            "open_application": "app_name",
+            "close_application": "app_name",
+            "run_system_command": "command",
+            "simulate_typing": "text",
+            "press_key": "key",
+            "focus_window": "title",
+            "web_search": "query",
+            "get_weather": "city",
+            "open_youtube": "query",
+            "read_webpage": "url",
+            "delete_file": "path",
+            "create_folder": "path",
+            "recall": "key",
+            "forget": "key",
+        }
+
+        # No-arg tools
+        no_arg_tools = ["list_open_windows", "get_screen_size", "take_screenshot", "recall_all", "get_daily_briefing"]
+
+        if func_name in no_arg_tools:
+            return func()
+        elif func_name in single_arg_map:
+            return func(func_args.get(single_arg_map[func_name], ""))
+        elif func_name == "simulate_hotkey":
+            keys = [k.strip() for k in func_args.get("keys", "").split("+")]
+            return func(*keys)
+        elif func_name == "simulate_click":
+            return func(func_args.get("x"), func_args.get("y"), func_args.get("button", "left"))
+        elif func_name == "move_mouse":
+            return func(func_args.get("x"), func_args.get("y"))
+        elif func_name == "trigger_mobile_webhook":
+            payload = {"action": func_args.get("action", ""), "data": func_args.get("data", "")}
+            return func(func_args.get("webhook_id", ""), payload)
+        elif func_name == "find_files":
+            return func(func_args.get("directory", ""), func_args.get("pattern", "*"))
+        elif func_name in ("move_file", "copy_file"):
+            return func(func_args.get("source", ""), func_args.get("destination", ""))
+        elif func_name == "read_file_contents":
+            return func(func_args.get("path", ""), int(func_args.get("num_lines", 10)))
+        elif func_name == "remember":
+            return func(func_args.get("key", ""), func_args.get("value", ""))
+        elif func_name == "save_conversation":
+            return func(func_args.get("user_said", ""), func_args.get("diana_said", ""))
+        else:
+            return func(**func_args)
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
 
 
 async def main():
     print("=" * 50)
     print("  Initializing Project Diana (Power ++)")
+    print(f"  Tools loaded: {len(MCP_TOOLS)}")
     print("=" * 50)
 
     if not GEMINI_API_KEY:
