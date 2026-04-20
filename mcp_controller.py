@@ -61,7 +61,11 @@ def close_application(app_name):
 
 def run_system_command(command):
     try:
-        result = subprocess.run(command, shell=True, capture_output=True, text=True, timeout=15)
+        # Use PowerShell for better compatibility with modern Windows
+        result = subprocess.run(
+            ["powershell", "-NoProfile", "-Command", command],
+            capture_output=True, text=True, timeout=15
+        )
         return {"status": "success", "output": result.stdout[:1500], "error": result.stderr[:500]}
     except subprocess.TimeoutExpired:
         return {"status": "error", "message": "Timed out"}
