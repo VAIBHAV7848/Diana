@@ -1,0 +1,6 @@
+.env
+__pycache__/
+*.pyc
+diana_thoughts.json
+last_screenshot.jpg
+*.jpg
