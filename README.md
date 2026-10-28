@@ -5,7 +5,7 @@
 ### Your Omnipotent Voice-Controlled AI Desktop Companion
 
 [![Python](https://img.shields.io/badge/Python-3.12+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
-[![Analytics Engine](https://img.shields.io/badge/Analytics Engine_2.5_Flash-Live_Audio-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://ai.google.dev)
+[![Google Gemini](https://img.shields.io/badge/Gemini_Live_Audio-WebSocket_API-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://ai.google.dev)
 [![Windows](https://img.shields.io/badge/Windows_11-0078D4?style=for-the-badge&logo=windows11&logoColor=white)](https://www.microsoft.com/windows)
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
@@ -26,7 +26,7 @@ She can hear you, talk back, think out loud, and control your entire computer wi
 | Feature | Description |
 |---------|-------------|
 | 🎙️ **Wake Word Detection** | Say **"Hey Diana"** to activate. She sleeps quietly until called. |
-| 🗣️ **Real-Time Voice Chat** | Full-duplex audio streaming via Analytics Engine 2.5 Flash Native Audio |
+| 🗣️ **Real-Time Voice Chat** | Full-duplex bidirectional audio streaming via Google Gemini Multimodal Live API |
 | 💭 **Floating Thought Bubbles** | See Diana's thinking process in real-time on your screen |
 | 🖥️ **Full OS Control** | Open/close apps, type, click, keyboard shortcuts, screenshots |
 | 🌐 **Web Intelligence** | Search the web, check weather, open YouTube, read webpages |
@@ -66,8 +66,8 @@ She can hear you, talk back, think out loud, and control your entire computer wi
        │
        ▼
 ┌──────────────────────┐
-│  Analytics Engine 2.5 Flash    │
-│  Live Audio API      │
+│  Google Gemini 2.0 / 2.5 Flash │
+│  Live Audio API (WebSocket)   │
 │  (WebSocket)         │
 └──────────────────────┘
 ```
@@ -81,7 +81,7 @@ She can hear you, talk back, think out loud, and control your entire computer wi
 - **Python 3.12+** installed
 - **Windows 10/11**
 - **Microphone** connected
-- **Analytics Engine API Key** from [Google AI Studio](https://aistudio.google.com/apikey)
+- **Google Gemini API Key** from [Google AI Studio](https://aistudio.google.com/apikey)
 
 ### Installation
 
@@ -316,7 +316,7 @@ Diana/
 
 | Service | Purpose | Free? | Get it at |
 |---------|---------|-------|-----------|
-| **Analytics Engine API** | Voice AI engine | ✅ Free tier | [aistudio.google.com](https://aistudio.google.com/apikey) |
+| **Google Gemini API** | Live Audio & tool orchestration | ✅ Free tier | [aistudio.google.com](https://aistudio.google.com/apikey) |
 | **Google Speech** | Wake word detection | ✅ Free | Built into `speech_recognition` |
 | **DuckDuckGo** | Web search | ✅ Free | No key needed |
 | **wttr.in** | Weather | ✅ Free | No key needed |
